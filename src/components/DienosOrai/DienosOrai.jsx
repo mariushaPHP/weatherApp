@@ -7,7 +7,7 @@ const DienosOrai = ({...props}) => {
     const minTemp = Math.min(...props.orai.airTemperature)
 
     return (
-        <div className='diena' onClick={()=> props.nustatyti(props.orai)}>
+        <div className='diena' onClick={()=> props.nustatyti(props.oraigit)}>
             <h5>{props.orai.diena}</h5>
             <h5>{maxTemp}<sup>o</sup>/{minTemp}<sup>o</sup></h5>
         </div>

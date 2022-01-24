@@ -8,13 +8,12 @@ const OrasDabar = (props) => {
 
     const [savaitesOrai, setSavaitesOrai] = useState([])
     const [diena, setDiena] = useState()
+    const [kitoksDiena, setKitoksDiena] = useState([])
     let oruMasyvas = [];
     useEffect( () => {
          fetch(`https://api.meteo.lt/v1/places/${props.city}/forecasts/long-term`)
             .then(response => response.json())
             .then(data => {
-                //const masyvas = [];
-
                 let orai = data["forecastTimestamps"];
                 for(let dienos = 0; dienos < 7; dienos++){
                     let diena = new Date();
@@ -42,24 +41,24 @@ const OrasDabar = (props) => {
                     oruMasyvas = [...oruMasyvas, dienosOras];
                 }
                 setSavaitesOrai(oruMasyvas)
-                setDiena(oruMasyvas[0]);
-            })//setOraiNuoDabar(naglaFunkcija(data.forecastTimestamps.filter(laikas =>laikas.forecastTimeUtc.slice(0, 13) >= weatherFromNow()))))
-    }, [props.city]);
+                //setDiena(oruMasyvas[0]);
+            })
+    }, []);
 
-    function weatherFromNow(){
-        const date = new Date();
-        const dateStr =
-            date.getFullYear() + "-" +
-            ("00" + date.getMonth() + 1).slice(-2) + "-" +
-            ("00" + (date.getDate())).slice(-2) +" " +
-            ("00" + date.getHours()).slice(-2) /*+ ":" +
-        ("00" + date.getMinutes()).slice(-2) + ":" +
-        ("00" + date.getSeconds()).slice(-2);*/
-        //console.log('valanda - ',dateStr.slice(8, 10));
-        //console.log(date.getDate())
-
-        return dateStr
-    }
+    // function weatherFromNow(){
+    //     const date = new Date();
+    //     const dateStr =
+    //         date.getFullYear() + "-" +
+    //         ("00" + date.getMonth() + 1).slice(-2) + "-" +
+    //         ("00" + (date.getDate())).slice(-2) +" " +
+    //         ("00" + date.getHours()).slice(-2) /*+ ":" +
+    //     ("00" + date.getMinutes()).slice(-2) + ":" +
+    //     ("00" + date.getSeconds()).slice(-2);*/
+    //     //console.log('valanda - ',dateStr.slice(8, 10));
+    //     //console.log(date.getDate())
+    ////setOraiNuoDabar(naglaFunkcija(data.forecastTimestamps.filter(laikas =>laikas.forecastTimeUtc.slice(0, 13) >= weatherFromNow()))))
+    //     return dateStr
+    // }
 
     function savaitesDiena(diena){
         switch(diena){
@@ -77,19 +76,40 @@ const OrasDabar = (props) => {
         setDiena(obj)
     }
 
-    useEffect(() => {
+    // useEffect(() => {
+    //     if(diena){
+    //         const mas = [];
+    //         for(let i=0; i<diena.airTemperature.length; i++){
+    //             const obj = {
+    //                 val: diena.forecastTimeUtc[i].slice(11, 16),
+    //                 temp: diena.airTemperature[i],
+    //                 vejoGreitis: diena.windSpeed[i]
+    //             }
+    //             mas.push(obj)
+    //         }
+    //         setKitoksDiena(mas)
+    //     }
+    // }, [diena])
 
-    }, [diena])
-
-    //console.log(savaitesOrai)
+    console.log('savataites orai ',savaitesOrai)
+    console.log('dienos orai ', diena)
 
     return (
         <>
             <div className='dienos'>
-                {savaitesOrai.map(diena => <DienosOrai nustatyti={nustatytiOrus} key={nanoid()} orai={diena}/>)}
+                {
+                    savaitesOrai.length ? savaitesOrai.map(diena => <DienosOrai nustatyti={nustatytiOrus} key={nanoid()} orai={diena}/>) :
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                }
             </div>
-            <OraiKasValanada info={diena}/>
-
+            {
+                diena ? <OraiKasValanada info={diena}/> :
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            }
         </>
 
     );
